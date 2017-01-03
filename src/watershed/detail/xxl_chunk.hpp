@@ -27,8 +27,8 @@
 
 #include <detail/mmap_file.hpp>
 #include <detail/mmap_vector.hpp>
-#include <chunk.hpp>
-#include <affinity_matrix.hpp>
+#include <detail/chunk.hpp>
+#include <detail/affinity_matrix.hpp>
 #include <zi/concurrency/mutex.hpp>
 #include <zi/concurrency/rwmutex.hpp>
 
