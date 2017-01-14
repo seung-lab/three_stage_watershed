@@ -8,8 +8,9 @@
 ZiARG_string( filename,  "./test/t1", "watershed input/output" );
 ZiARG_double( high, 0.99, "high thold" );
 ZiARG_double( low, 0.1, "low thold" );
-ZiARG_int32(  dust, 25, "dust thold" );
+ZiARG_int32(  merge, 25, "merge thold" );
 ZiARG_double( dust_low, 0.1, "dust low thold" );
+ZiARG_int32(  dust, 25, "dust thold" );
 ZiARG_int32(  threads, 8, "number of threads for the watershed" );
 ZiARG_bool( verbose, true, "show more info during execution" );
 
@@ -48,8 +49,9 @@ int main( int argc, char **argv )
                 newws( filename,
                        static_cast< float >( ZiARG_high ),
                        static_cast< float >( ZiARG_low ),
-                       static_cast< uint32_t >( ZiARG_dust ),
+                       static_cast< uint32_t >( ZiARG_merge ),
                        static_cast< float >( ZiARG_dust_low ),
+                       static_cast< uint32_t >( ZiARG_dust ),
                        ws.x, ws.y, ws.z,
                        chunk_sizes,
                        ZiARG_threads,
@@ -63,8 +65,9 @@ int main( int argc, char **argv )
                 newws( filename,
                        static_cast< float >( ZiARG_high ),
                        static_cast< float >( ZiARG_low ),
-                       static_cast< uint64_t >( ZiARG_dust ),
+                       static_cast< uint64_t >( ZiARG_merge ),
                        static_cast< float >( ZiARG_dust_low ),
+                       static_cast< uint64_t >( ZiARG_dust ),
                        ws.x, ws.y, ws.z,
                        chunk_sizes,
                        ZiARG_threads,
@@ -81,8 +84,9 @@ int main( int argc, char **argv )
                 newws( filename,
                        static_cast< float >( ZiARG_high ),
                        static_cast< float >( ZiARG_low ),
-                       static_cast< uint32_t >( ZiARG_dust ),
+                       static_cast< uint32_t >( ZiARG_merge ),
                        static_cast< float >( ZiARG_dust_low ),
+                       static_cast< uint32_t >( ZiARG_dust ),
                        ws.x, ws.y, ws.z,
                        chunk_sizes,
                        ZiARG_threads,
@@ -96,8 +100,9 @@ int main( int argc, char **argv )
                 newws( filename,
                        static_cast< double >( ZiARG_high ),
                        static_cast< double >( ZiARG_low ),
-                       static_cast< uint64_t >( ZiARG_dust ),
+                       static_cast< uint64_t >( ZiARG_merge ),
                        static_cast< double >( ZiARG_dust_low ),
+                       static_cast< uint64_t >( ZiARG_dust ),
                        ws.x, ws.y, ws.z,
                        chunk_sizes,
                        ZiARG_threads,

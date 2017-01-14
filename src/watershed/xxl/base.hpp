@@ -71,8 +71,9 @@ protected:
     const std::string filename_             ;
     const T           high_threshold_       ;
     const T           low_threshold_        ;
-    const Count       dust_threshold_       ;
+    const Count       merge_threshold_       ;
     const T           dust_merge_threshold_ ;
+    const Count       dust_threshold_       ;
     chunk_type*       raw_chunk_data_       ;
     chunk_cube        chunks_               ;
     size_type         size_                 ;
@@ -82,16 +83,18 @@ public:
     watershed_base( const std::string& filename,
                     const value_type&  high_threshold,
                     const value_type&  low_threshold,
-                    const count_type&  dust_threshold,
+                    const count_type&  merge_threshold,
                     const value_type&  dust_merge_threshold,
+                    const count_type&  dust_threshold,
                     size_type xsize,
                     size_type ysize,
                     size_type zsize )
         : filename_( filename ),
           high_threshold_( high_threshold ),
           low_threshold_( low_threshold ),
-          dust_threshold_( dust_threshold ),
+          merge_threshold_( merge_threshold ),
           dust_merge_threshold_( dust_merge_threshold ),
+          dust_threshold_( dust_threshold ),
           raw_chunk_data_( new chunk_type[ xsize*ysize*zsize ] ),
           chunks_( raw_chunk_data_, extents[xsize][ysize][zsize] ),
           size_( xsize*ysize*zsize ),
@@ -101,14 +104,16 @@ public:
     watershed_base( const std::string& filename,
                     const value_type&  high_threshold,
                     const value_type&  low_threshold,
-                    const count_type&  dust_threshold,
+                    const count_type&  merge_threshold,
                     const value_type&  dust_merge_threshold,
+                    const count_type&  dust_threshold,
                     const chunk_cube&  chunks )
         : filename_( filename ),
           high_threshold_( high_threshold ),
           low_threshold_( low_threshold ),
-          dust_threshold_( dust_threshold ),
+          merge_threshold_( dust_threshold ),
           dust_merge_threshold_( dust_merge_threshold ),
+          dust_threshold_( dust_threshold ),
           chunks_( chunks ),
           size_( chunks.num_elements() ),
           mutex_()
@@ -142,14 +147,19 @@ public:
         return low_threshold_;
     }
 
-    const count_type& dust_threshold() const
+    const count_type& merge_threshold() const
     {
-        return dust_threshold_;
+        return merge_threshold_;
     }
 
     const value_type& dust_merge_threshold() const
     {
         return dust_merge_threshold_;
+    }
+
+    const count_type& dust_threshold() const
+    {
+        return dust_threshold_;
     }
 
     size_type dim( size_type x ) const

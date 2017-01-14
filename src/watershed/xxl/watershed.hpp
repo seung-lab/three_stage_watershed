@@ -109,16 +109,17 @@ public:
     watershed_impl( const std::string& filename,
                     const value_type&  high_threshold,
                     const value_type&  low_threshold,
-                    const count_type&  dust_threshold,
+                    const count_type&  merge_size_threshold,
                     const value_type&  dust_merge_threshold,
+                    const count_type&  dust_threshold,
                     size_type xsize,
                     size_type ysize,
                     size_type zsize,
                     const chunk_dimensions* cdims,
                     size_type num_threads = 2,
                     bool verbose = true )
-        : super_type( filename, high_threshold, low_threshold, dust_threshold,
-                      dust_merge_threshold, xsize, ysize, zsize ),
+        : super_type( filename, high_threshold, low_threshold, merge_size_threshold,
+                      dust_merge_threshold, dust_threshold, xsize, ysize, zsize ),
           task_manager_( num_threads ),
           serial_task_manager_( 1 ),
           sizes_(),
@@ -177,8 +178,9 @@ public:
               affinities,
               super_type::high_threshold(),
               super_type::low_threshold(),
-              super_type::dust_threshold(),
+              super_type::merge_threshold(),
               super_type::dust_merge_threshold(),
+              super_type::dust_threshold(),
               c->flags(),
               ids,
               counts,
@@ -495,6 +497,7 @@ public:
         const value_type min_threshold  = super_type::dust_merge_threshold();
         const value_type low_threshold  = super_type::low_threshold();
         const value_type high_threshold = super_type::high_threshold();
+        const count_type merge_threshold = super_type::merge_threshold();
         const count_type dust_threshold = super_type::dust_threshold();
 
         while ( !queue.empty() )
@@ -561,7 +564,7 @@ public:
             if ( v1 != v2 )
             {
 
-                if ( sizes_[v1] < dust_threshold || sizes_[v2] < dust_threshold )
+                if ( sizes_[v1] < merge_threshold || sizes_[v2] < merge_threshold )
                 {
                     const id_type vr = sets_.join( v1, v2 );
                     sizes_[ v1 ] += sizes_[ v2 ];

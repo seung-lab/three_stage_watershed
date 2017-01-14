@@ -102,8 +102,9 @@ chunk_quickie_impl( const size_type      xsize,
                     const ValueType*     conn,
                     const ValueType      high,
                     const ValueType      low,
+                    const SizeType       merge_size,
+                    const ValueType      merge_low,
                     const SizeType       dust_size,
-                    const ValueType      dust_low,
                     const int            borders,
                     SegmentIdType*       seg,
                     std::vector< SizeType >& counts,
@@ -295,7 +296,7 @@ chunk_quickie_impl( const size_type      xsize,
 
     zi::unordered_map< id_pair, value_type > uniques;
 
-    value_type dend_min = std::min( low, dust_low );
+    value_type dend_min = std::min( low, merge_low );
 
     const index rindex[3] = { -1, -xdim, -xdim*ydim };
 
@@ -446,11 +447,11 @@ chunk_quickie_impl( const size_type      xsize,
                 --next_id;
             }
         }
-        else if ( zi::get<2>(dendr[i]) >= dust_low )
+        else if ( zi::get<2>(dendr[i]) >= merge_low )
         {
             if ( v1 != v2 )
             {
-                if ((counts[v1]<dust_size) || (counts[v2]<dust_size))
+                if ((counts[v1]<merge_size) || (counts[v2]<merge_size))
                 {
                     if ((on_border&(counts[v1]|counts[v2]))==0)
                     {
