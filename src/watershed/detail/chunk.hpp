@@ -55,7 +55,7 @@ private:
 
 public:
     chunk( std::size_t x, std::size_t y, std::size_t z,
-           const std::string& fname, bool zero_fill = false )
+           const std::string& fname, bool stored, bool zero_fill = false )
         : data_(0),
           x_(x),
           y_(y),
@@ -64,7 +64,7 @@ public:
           yoffs_(0),
           zoffs_(0),
           zero_fill_(zero_fill),
-          stored_(false),
+          stored_(stored),
           filename_(fname)
     {
         yoffs_ = reinterpret_cast< std::size_t* >( malloc( y * sizeof( std::size_t ) ));

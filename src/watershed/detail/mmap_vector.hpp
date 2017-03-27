@@ -39,7 +39,7 @@ public:
 
     mmap_vector( const std::string& file_name,
                  std::size_t size = 0,
-                 bool delete_on_close = true )
+                 bool delete_on_close = false )
         : std::vector< T, Allocator >( size ),
           size_( size ),
           file_name_( file_name ),
@@ -67,6 +67,11 @@ public:
     std::size_t stored_size() const
     {
         return size_;
+    }
+
+    void set_size(std::size_t size)
+    {
+        size_ = size;
     }
 
     void flush()

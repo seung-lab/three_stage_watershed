@@ -106,7 +106,8 @@ public:
                std::size_t zw,
                const std::string& prefix,
                shared_ptr< file_mapping > connf,
-               size_type connoff )
+               size_type connoff,
+               bool reload = false)
         : xpos_( xpos ),
           ypos_( ypos ),
           zpos_( zpos ),
@@ -120,7 +121,7 @@ public:
           merge_graph_size_( 0 ),
           merge_pairs_size_( 0 ),
 
-          chunk_( new chunk_type( xw, yw, zw, prefix_+".seg" ) ),
+          chunk_( new chunk_type( xw, yw, zw, prefix_+".seg", reload ) ),
           conn_ ( new conn_type( xw, yw, zw, connf, connoff, false ) ),
           pos_(),
           counts_( prefix_ + "counts.tmp" ),
@@ -133,6 +134,9 @@ public:
         pos_[ 0 ] = xpos_;
         pos_[ 1 ] = ypos_;
         pos_[ 2 ] = zpos_;
+        if (reload) {
+            load_sizes();
+        }
     }
 
     mmap_vector< tuple< id_type, id_type, value_type > >& dendr( bool reload = false )
@@ -361,6 +365,57 @@ public:
         }
 
         chunk_->close();
+    }
+
+    void load_sizes()
+    {
+        int64_t sz[10] = {0,0,0,0,0,0,0,0,0,0};
+        mmap_file::read(prefix_ + "sizes.tmp", sz, 10*sizeof(int64_t));
+        count_ = sz[0];
+        offset_ = sz[1];
+        own_dendr_size_ = sz[2];
+        merge_graph_size_ = sz[3];
+        merge_pairs_size_ = sz[4];
+        counts_.set_size(sz[5]);
+        dendr_.set_size(sz[6]);
+        more_dendr_.set_size(sz[7]);
+        false_minima_.set_size(sz[8]);
+        merge_pairs_.set_size(sz[9]);
+        std::cout << "sizes: " << sz[0] << " " << sz[1] << " " << sz[2] << " "
+            << sz[3] << " " << sz[4] << " " << sz[5] << " " << sz[6] << " "
+            << sz[7] << " " << sz[8] << " " << sz[9] << std::endl;
+    }
+
+    void flush_reorder(std::vector< id_type > & reorder)
+    {
+        mmap_file::write_n(prefix_ + "reorder.tmp", reorder.begin()+offset_, count_);
+    }
+
+    std::vector< id_type > load_reorder()
+    {
+        std::vector< id_type > reorder;
+        reorder.resize(count_);
+        mmap_file::read_n(prefix_ + "reorder.tmp", reorder.begin(), count_);
+        return reorder;
+    }
+
+    void flush_sizes()
+    {
+        int64_t sz[10] = {0,0,0,0,0,0,0,0,0,0};
+        sz[0] = count_;
+        sz[1] = offset_;
+        sz[2] = own_dendr_size_;
+        sz[3] = merge_graph_size_;
+        sz[4] = merge_pairs_size_;
+        sz[5] = counts_.stored_size();
+        sz[6] = dendr_.stored_size();
+        sz[7] = more_dendr_.stored_size();
+        sz[8] = false_minima_.stored_size();
+        sz[9] = merge_pairs_.stored_size();
+        std::cout << "sizes: " << sz[0] << " " << sz[1] << " " << sz[2] << " "
+            << sz[3] << " " << sz[4] << " " << sz[5] << " " << sz[6] << " "
+            << sz[7] << " " << sz[8] << " " << sz[9] << std::endl;
+        mmap_file::write(prefix_ + "sizes.tmp", sz, 10*sizeof(int64_t));
     }
 
     void get_seg_faces( int orientation,
