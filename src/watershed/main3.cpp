@@ -48,13 +48,13 @@ int main( int argc, char **argv )
     {
         if ( ws.id_bitsize == 32 )
         {
-            zi::watershed::xxl::stage_3_impl< float, uint32_t, uint32_t >
+            zi::watershed::xxl::stage_3_impl< float, uint64_t, uint64_t >
                 newws( filename,
                        static_cast< float >( ZiARG_high ),
                        static_cast< float >( ZiARG_low ),
-                       static_cast< uint32_t >( ZiARG_merge ),
+                       static_cast< uint64_t >( ZiARG_merge ),
                        static_cast< float >( ZiARG_dust_low ),
-                       static_cast< uint32_t >( ZiARG_dust ),
+                       static_cast< uint64_t >( ZiARG_dust ),
                        ws.x, ws.y, ws.z,
                        ws.i, ws.j, ws.k,
                        chunk_sizes,
