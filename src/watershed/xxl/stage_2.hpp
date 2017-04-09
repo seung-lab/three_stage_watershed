@@ -295,7 +295,7 @@ public:
         {
             more_dendr[ idx++ ] = tie( it->first.first, it->first.second, it->second );
         }
-        zi::sort( more_dendr.begin(), more_dendr.end(), edge_compare< T, id_type > );
+        zi::stable_sort( more_dendr.begin(), more_dendr.end(), edge_compare< T, id_type > );
         more_dendr.flush();
 
         mmap_vector< id_pair >& merge_pairs = c->merge_pairs();
