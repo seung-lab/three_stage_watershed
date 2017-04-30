@@ -3,9 +3,6 @@ using HDF5
 
 include("source.jl")
 
-d = S3Dict("s3://neuroglancer/pinky40_v11/affinitymap-jnet/4_4_40/")
-aff = BigArray(d)
-
 target = [parse(Int32, x) for x in ARGS[1:end]]
 
 #chunks = [4,4,1]
@@ -35,13 +32,10 @@ for x in 1:chunks[1]
                 stop_z = stops[3]
             end
             if x == (target[1]+1) && y == (target[2]+1) && z == (target[3]+1)
-                aff_data = aff[start_x:stop_x, start_y:stop_y, start_z:stop_z, 1:3]
-                aff_size = collect(size(aff_data)[1:3])
+                aff_size = [stop_x-start_x+1, stop_y-start_y+1, stop_z-start_z+1]
                 println("size of the chunk $(aff_size[1]), $(aff_size[2]), $(aff_size[3])")
                 println("$start_x:$stop_x, $start_y:$stop_y, $start_z:$stop_z")
-                write(aff_file, aff_data)
                 write(chunksizes_file, convert(Array{Int32,1}, aff_size))
-                run(`mkdir -p input.chunks/$(x-1)/$(y-1)/$(z-1)`)
             end
             start_z = stop_z - 1
         end
