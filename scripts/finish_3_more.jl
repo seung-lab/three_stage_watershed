@@ -5,7 +5,7 @@ using BigArrays
 
 include("source.jl")
 
-d = S3Dict("s3://neuroglancer/pinky40_v11/watershed/4_4_40/")
+d = S3Dict("s3://seunglab/watershed_output/4_4_40/")
 ba = BigArray(d)
 
 

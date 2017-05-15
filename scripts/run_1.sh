@@ -19,12 +19,12 @@ rm input.affinity.data input.chunksizes input.metadata
 rm -rf input.chunks
 
 
-try julia /mnt/data01/prepare_1.jl $i $j $k
+try timeout 60m julia /mnt/data01/prepare_1.jl $i $j $k
 try /mnt/data01/stage_1 --filename=./input --high=0.999987 --low=0.003 --dust=800 --dust_low=0.3 --merge=800
 
 try tar --exclude=.seg -jcvf "$i"_"$j"_"$k".tar.bz2 input.chunks
 mv input.chunks/$i/$j/$k/.seg "$i"_"$j"_"$k".seg
-try bzip -1 "$i"_"$j"_"$k".seg
+try pbzip2 -1 "$i"_"$j"_"$k".seg
 touch "$i"_"$j"_"$k".txt
 
 try aws s3 cp "$i"_"$j"_"$k".tar.bz2 $S3PATH/dend/

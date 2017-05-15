@@ -23,8 +23,8 @@ try aws s3 cp $S3PATH/seg/"$i"_"$j"_"$k".seg.bz2 .
 try aws s3 cp $S3PATH/reorder/"$i"_"$j"_"$k".reorder.tmp.bz2 .
 
 try tar -jxvf "$i"_"$j"_"$k".tar.bz2
-try bunzip "$i"_"$j"_"$k".seg.bz2
-try bunzip "$i"_"$j"_"$k".reorder.tmp.bz2
+try bunzip2 "$i"_"$j"_"$k".seg.bz2
+try bunzip2 "$i"_"$j"_"$k".reorder.tmp.bz2
 
 mv "$i"_"$j"_"$k".seg input.chunks/$i/$j/$k/.seg
 mv "$i"_"$j"_"$k".reorder.tmp input.chunks/$i/$j/$k/reorder.tmp
@@ -33,7 +33,8 @@ try julia /mnt/data01/prepare_3.jl $i $j $k
 try /mnt/data01/stage_3 --filename=./input --high=0.999987 --low=0.003 --dust=800 --dust_low=0.3 --merge=800
 rm input.affinity.data input.chunksizes input.metadata
 try julia /mnt/data01/prepare_2.jl
-try julia /mnt/data01/finish_3.jl $i $j $k
+try timeout 20m julia /mnt/data01/finish_3.jl $i $j $k
+try timeout 20m julia /mnt/data01/finish_3_more.jl $i $j $k
 
 touch "$i"_"$j"_"$k".txt
 
